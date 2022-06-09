@@ -3,8 +3,7 @@ import time
 from typing import List
 
 @torch.jit.script
-def with_rms_norm(input1: torch.Tensor, input2: torch.Tensor, weight: torch.Tensor, bias: torch.Tensor, normalization_axis: int, dropout_prob: float, keepdim: bool):
-    __constants__ = ['normalization_axis', 'dropout_prob', 'keepdim']
+def with_rms_norm(input1, input2, weight, bias, normalization_axis, dropout_prob, keepdim):
     bias_out = input1 + bias
     dropout_out = torch.nn.functional.dropout(bias_out, dropout_prob)
     norm_input = dropout_out + input2

@@ -1,10 +1,8 @@
 import torch
 import time
 from typing import List
-# TorchScript often needs some help with type information, let's provide it with the type of inputs it needs to expect
 @torch.jit.script
-def composite_definition(input1: torch.Tensor, input2: torch.Tensor, weight: torch.Tensor, bias1: torch.Tensor, bias2: torch.Tensor, normalization_axis: int, dropout_prob: float, keepdim: bool):
-    __constants__ = ['normalization_axis', 'dropout_prob', 'keepdim']
+def composite_definition(input1, input2, weight, bias1, bias2, normalization_axis, dropout_prob):
     bias1_out = input1 + bias1
     dropout_out = torch.nn.functional.dropout(bias1_out, dropout_prob)
     norm_input = dropout_out + input2
@@ -42,7 +40,7 @@ for _ in range(3):
     input2 = inputs2[0]
     grad_output = grad_outputs[0]
     # Run model, forward and backward
-    output = composite_definition(input1, input2, weight, bias1, bias2, normalization_axis=2, dropout_prob=0.1, keepdim=True)
+    output = composite_definition(input1, input2, weight, bias1, bias2, normalization_axis=2, dropout_prob=0.1)
     output.backward(grad_output)
 
 iteration_count = 100
@@ -55,7 +53,7 @@ for i in range(iteration_count):
     grad_output = grad_outputs[i % shape_count]
 
     # Run model, forward and backward
-    output = composite_definition(input1, input2, weight, bias1, bias2, normalization_axis=2, dropout_prob=0.1, keepdim=True)
+    output = composite_definition(input1, input2, weight, bias1, bias2, normalization_axis=2, dropout_prob=0.1)
     output.backward(grad_output)
 
 # Synchronize the GPU before stopping the timer
