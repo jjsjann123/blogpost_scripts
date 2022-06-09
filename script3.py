@@ -4,7 +4,7 @@ from typing import List
 
 # TorchScript often needs some help with type information, let's provide it with the type of inputs it needs to expect
 @torch.jit.script
-def with_rms_norm(input1, input2, weight, bias, normalization_axis: int, dropout_prob, keepdim):
+def with_rms_norm(input1, input2, weight, bias, normalization_axis: int, dropout_prob, keepdim: bool):
     bias_out = input1 + bias
     dropout_out = torch.nn.functional.dropout(bias_out, dropout_prob)
     norm_input = dropout_out + input2
